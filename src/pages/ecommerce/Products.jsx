@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 import {
   createProduct,
   deleteProduct,
@@ -11,8 +11,13 @@ import ModalBasic from "../../components/ModalBasic";
 import AppImage01 from "../../images/applications-image-01.jpg";
 
 function Products() {
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [products, setProducts] = useState([]);
+  const [updateProductModal, setUpdateProductModal] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [confirmationModal, setConfirmationModal] = useState(false);
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: "Product X",
@@ -27,11 +32,13 @@ function Products() {
   });
 
   const handleCreateProduct = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     console.log(newProduct);
     await createProduct(newProduct)
       .then((response) => {
         console.log(response);
+        setFeedbackModalOpen(false);
+        // console.log(setFeedbackModalOpen);
       })
       .catch((e) => {
         console.log(e);
@@ -49,32 +56,52 @@ function Products() {
   };
 
   const handleUpdateProduct = async (id) => {
-    console.log(id);
+    // console.log(_id);
     await updateProduct(id, editProduct)
       .then((response) => {
         console.log(response);
+        console.log(id);
+        navigate(0);
       })
       .catch((e) => {
-        console.log(e);
+        console.log(e.message, e.code);
       });
   };
 
   const handleDeleteProduct = async (id) => {
-    console.log(id);
     await deleteProduct(id)
       .then((response) => {
+        setProducts(products.filter((product) => product.id !== id));
+        navigate(0);
         console.log(response);
       })
       .catch((e) => {
-        console.log(e);
+        console.log("Error deleting product:", e);
       });
+  };
+
+  const handleOpenDeleteModal = (product) => {
+    setProductToDelete(product);
+    setDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setProductToDelete(null);
+    setDeleteModalOpen(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (productToDelete) {
+      await handleDeleteProduct(productToDelete._id);
+      handleCloseDeleteModal();
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       await fetchProducts(newProduct)
         .then((response) => {
-          console.log(response.data);
+          // console.log(response.data);
           setProducts(response.data.products);
         })
         .catch((e) => {
@@ -158,20 +185,26 @@ function Products() {
                           className="btn-sm text-blue-500 hover:bg-blue-100"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setNewProduct(product);
-                            setFeedbackModalOpen(true);
+                            // handleUpdateProduct();
+                            setEditProduct(product);
+                            setUpdateProductModal(true);
                           }}
                         >
                           Edit
                         </button>
                       </div>
                       <div>
-                        <a
+                        <button
                           className="btn-sm text-red-500 hover:bg-red-100"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenDeleteModal(product);
+                            setDeleteModalOpen(true);
+                          }}
                           href="#0"
                         >
                           Delete
-                        </a>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -180,6 +213,63 @@ function Products() {
             ))}
           </div>
         </div>
+      </div>
+      <div className="m-1.5">
+        <ModalBasic
+          id="feedback-modal"
+          modalOpen={deleteModalOpen}
+          setModalOpen={setDeleteModalOpen}
+          title="Product Details"
+        >
+          <div className="px-5 py-4">
+            <p className="text-sm">
+              Are you sure you want to delete this product?
+            </p>
+          </div>
+          {/* Modal footer with confirm and cancel buttons */}
+          <div className="px-5 py-4 border-t border-gray-200">
+            <div className="flex flex-wrap justify-end space-x-2">
+              <button
+                className="btn-sm border-gray-200 hover:border-gray-300 text-gray-600"
+                onClick={handleCloseDeleteModal}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn-sm bg-red-500 hover:bg-red-600 text-white"
+                onClick={handleConfirmDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </ModalBasic>
+      </div>
+      <div className="m-1.5">
+        <ModalBasic
+          id="feedback-modal"
+          modalOpen={confirmationModal}
+          setModalOpen={setConfirmationModal}
+          title="Product Details"
+        >
+          <div className="px-5 py-4">
+            <p className="text-sm">Product created Successfully...</p>
+          </div>
+          {/* Modal footer with confirm and cancel buttons */}
+          <div className="px-5 py-4 border-t border-gray-200">
+            <div className="flex flex-wrap justify-end space-x-2">
+              <button
+                className="btn-sm bg-red-500 hover:bg-red-600 text-white"
+                onClick={() => {
+                  setConfirmationModal(false);
+                  navigate(0);
+                }}
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </ModalBasic>
       </div>
       <div className="m-1.5">
         <ModalBasic
@@ -284,7 +374,127 @@ function Products() {
               </button>
               <button
                 className="btn-sm bg-black hover:bg-black text-white"
-                onClick={handleCreateProduct}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCreateProduct();
+                  setConfirmationModal(true);
+                }}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </ModalBasic>
+
+        <ModalBasic
+          id="feedback-modal"
+          modalOpen={updateProductModal}
+          setModalOpen={setUpdateProductModal}
+          title="Product Details"
+        >
+          {/* Modal content */}
+          <div className="px-5 py-4">
+            {/* <div className="text-sm">
+              <div className="font-medium text-gray-800 mb-3">
+                Let us know what you think 🙌
+              </div>
+            </div> */}
+            <div className="space-y-3">
+              <div>
+                <label
+                  className="block text-sm font-medium mb-1"
+                  htmlFor="name"
+                >
+                  Product Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="name"
+                  className="form-input w-full px-2 py-1"
+                  type="text"
+                  value={editProduct.name}
+                  onChange={(e) =>
+                    setEditProduct({ ...editProduct, name: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  className="block text-sm font-medium mb-1"
+                  htmlFor="price"
+                >
+                  Product Price <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="price"
+                  className="form-input w-full px-2 py-1"
+                  type="price"
+                  value={editProduct.price}
+                  onChange={(e) =>
+                    setEditProduct({ ...editProduct, price: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  className="block text-sm font-medium mb-1"
+                  htmlFor="description"
+                >
+                  Product Description <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  id="description"
+                  className="form-textarea w-full px-2 py-1"
+                  rows="4"
+                  value={editProduct.description}
+                  onChange={(e) =>
+                    setEditProduct({
+                      ...editProduct,
+                      description: e.target.value,
+                    })
+                  }
+                  required
+                ></textarea>
+              </div>
+              <div>
+                <label
+                  className="block text-sm font-medium mb-1"
+                  htmlFor="photo"
+                >
+                  Product Photo <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="file"
+                  id="photo"
+                  className="form-input"
+                  name="photo"
+                  accept="image/png, image/jpeg"
+                />
+              </div>
+            </div>
+          </div>
+          {/* Modal footer */}
+          <div className="px-5 py-4 border-t border-gray-200">
+            <div className="flex flex-wrap justify-end space-x-2">
+              <button
+                className="btn-sm border-gray-200 hover:border-gray-300 text-gray-600"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFeedbackModalOpen(false);
+                  setUpdateProductModal(false);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn-sm bg-black hover:bg-black text-white"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleUpdateProduct(editProduct._id);
+                  setUpdateProductModal(false);
+                  // setConfirmationModal(true);
+                }}
               >
                 Submit
               </button>
