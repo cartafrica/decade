@@ -9,7 +9,7 @@ import {
 } from "../../api/services/commerce";
 import ModalBasic from "../../components/ModalBasic";
 import AppImage01 from "../../images/applications-image-01.jpg";
-import LoadingButton from "../../components/LoadingButton";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 function Products() {
   const navigate = useNavigate();
@@ -254,7 +254,7 @@ function Products() {
                 className="btn-sm bg-red-500 hover:bg-red-600 text-white"
                 onClick={handleConfirmDelete}
               >
-                {loadingAddProduct ? <LoadingButton /> : "Delete"}
+                {loadingAddProduct ? <LoadingSpinner /> : "Delete"}
               </button>
             </div>
           </div>
@@ -395,7 +395,7 @@ function Products() {
                   setConfirmationModal(true);
                 }}
               >
-                {loadingAddProduct ? <LoadingButton /> : "Submit"}
+                {loadingAddProduct ? <LoadingSpinner /> : "Submit"}
               </button>
             </div>
           </div>
@@ -511,7 +511,7 @@ function Products() {
                   // setConfirmationModal(true);
                 }}
               >
-                {loadingAddProduct ? <LoadingButton /> : "Submit"}
+                {loadingAddProduct ? <LoadingSpinner /> : "Submit"}
               </button>
             </div>
           </div>
