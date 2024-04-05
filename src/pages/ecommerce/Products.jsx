@@ -9,6 +9,7 @@ import {
 } from "../../api/services/commerce";
 import ModalBasic from "../../components/ModalBasic";
 import AppImage01 from "../../images/applications-image-01.jpg";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import { formatValue } from "../../utils/Utils";
 
 function Products() {
@@ -20,6 +21,7 @@ function Products() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
+  const [loadingAddProduct, setLoadingAddProduct] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: "Product X",
     price: 500000,
@@ -31,6 +33,7 @@ function Products() {
   const handleCreateProduct = async (e) => {
     // e.preventDefault();
     console.log(newProduct);
+    setLoadingAddProduct(true);
     await createProduct(newProduct)
       .then((response) => {
         console.log(response);
@@ -39,6 +42,9 @@ function Products() {
       })
       .catch((e) => {
         console.log(e);
+      })
+      .finally(() => {
+        setLoadingAddProduct(false);
       });
   };
 
@@ -53,6 +59,7 @@ function Products() {
   };
 
   const handleUpdateProduct = async (id) => {
+    setLoadingAddProduct(true);
     // console.log(_id);
     await updateProduct(id, editProduct)
       .then((response) => {
@@ -62,10 +69,15 @@ function Products() {
       })
       .catch((e) => {
         console.log(e.message, e.code);
+      })
+      .finally(() => {
+        setLoadingAddProduct(false);
       });
   };
 
   const handleDeleteProduct = async (id) => {
+    setLoadingAddProduct(true);
+
     await deleteProduct(id)
       .then((response) => {
         setProducts(products.filter((product) => product.id !== id));
@@ -74,6 +86,9 @@ function Products() {
       })
       .catch((e) => {
         console.log("Error deleting product:", e);
+      })
+      .finally(() => {
+        setLoadingAddProduct(false);
       });
   };
 
@@ -239,7 +254,7 @@ function Products() {
                 className="btn-sm bg-red-500 hover:bg-red-600 text-white"
                 onClick={handleConfirmDelete}
               >
-                Delete
+                {loadingAddProduct ? <LoadingSpinner /> : "Delete"}
               </button>
             </div>
           </div>
@@ -380,7 +395,7 @@ function Products() {
                   setConfirmationModal(true);
                 }}
               >
-                Submit
+                {loadingAddProduct ? <LoadingSpinner /> : "Submit"}
               </button>
             </div>
           </div>
@@ -496,7 +511,7 @@ function Products() {
                   // setConfirmationModal(true);
                 }}
               >
-                Submit
+                {loadingAddProduct ? <LoadingSpinner /> : "Submit"}
               </button>
             </div>
           </div>
