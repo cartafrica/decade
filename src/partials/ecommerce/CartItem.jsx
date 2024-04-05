@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { getInitials } from "../../utils/Utils";
 
 function CartItem(props) {
   const [qty, setQty] = useState(1);
@@ -23,7 +24,10 @@ function CartItem(props) {
     <div className="flex space-x-5">
       <img
         className="w-24 h-24"
-        src={props.product.photo}
+        src={
+          props.product.photo ||
+          `https://placehold.co/120x120?text=${getInitials(props.product.name)}&font=roboto`
+        }
         alt={props.product.name}
       />
       <div className="flex flex-col space-y-2">
@@ -81,7 +85,7 @@ function CartItem(props) {
 
           <button
             className="text-sm underline hover:no-underline"
-            onClick={() => props.handleRemove(props.product.id)}
+            onClick={() => props.handleRemove(props.product._id)}
           >
             Remove
           </button>

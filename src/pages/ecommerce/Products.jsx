@@ -9,6 +9,7 @@ import {
 } from "../../api/services/commerce";
 import ModalBasic from "../../components/ModalBasic";
 import AppImage01 from "../../images/applications-image-01.jpg";
+import { formatValue } from "../../utils/Utils";
 
 function Products() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -21,10 +22,6 @@ function Products() {
   });
   const [editProduct, setEditProduct] = useState({});
   // Format the price above to USD using the locale, style, and currency.
-  let NGNaira = new Intl.NumberFormat("en-NG", {
-    style: "currency",
-    currency: "NGN",
-  });
 
   const handleCreateProduct = async (e) => {
     e.preventDefault();
@@ -72,7 +69,7 @@ function Products() {
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetchProducts(newProduct)
+      await fetchProducts()
         .then((response) => {
           console.log(response.data);
           setProducts(response.data.products);
@@ -123,7 +120,10 @@ function Products() {
         <div className="mt-8">
           <div className="grid grid-cols-12 gap-6">
             {products.map((product) => (
-              <div className="col-span-full sm:col-span-6 xl:col-span-3 bg-white shadow-lg rounded-sm border border-gray-200 overflow-hidden">
+              <div
+                key={product._id}
+                className="col-span-full sm:col-span-6 xl:col-span-3 bg-white shadow-lg rounded-sm border border-gray-200 overflow-hidden"
+              >
                 <div className="flex flex-col h-full">
                   {/* Image */}
                   <img
@@ -150,7 +150,7 @@ function Products() {
                       {/* Price */}
                       <div className="flex-1">
                         <div className="inline-flex text-sm font-medium text-green-600 rounded-full text-center">
-                          {NGNaira.format(product.price)}
+                          {formatValue(product.price)}
                         </div>
                       </div>
                       <div>
