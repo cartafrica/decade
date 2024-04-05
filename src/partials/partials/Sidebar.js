@@ -120,9 +120,9 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <NavLink
                   exact
                   to="/dashboard"
-                  className={`block text-gray-200 hover:text-white truncate transition duration-150 ${
-                    pathname === "/dashboard" &&
-                    "text-century hover:text-century"
+                  className={`block hover:text-white truncate transition duration-150 ${
+                    pathname === "/dashboard" ?
+                    "text-black" : "text-gray-200"
                   }`}
                 >
                   <div className="flex items-center">
@@ -141,10 +141,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <NavLink
                   exact
                   to="/orders"
-                  className={`block text-gray-200 hover:text-white truncate transition duration-150 ${
-                    pathname.includes("orders") &&
-                    "text-century hover:text-century"
-                  }`}
+                  className={`block hover:text-white truncate transition duration-150 ${
+                    pathname.includes("orders") ?
+                    "text-black"
+  : "text-gray-200"                 }`}
                 >
                   <div className="flex items-center">
                     <span className="text-sm font-medium ml-3 duration-200">
@@ -162,10 +162,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <NavLink
                   exact
                   to="/products"
-                  className={`block text-gray-200 hover:text-white truncate transition duration-150 ${
-                    pathname.includes("products") &&
-                    "text-century hover:text-century"
-                  }`}
+                  className={`block hover:text-white truncate transition duration-150 ${
+                    pathname.includes("products") ?
+                    "text-black"
+    : "text-gray-200"               }`}
                 >
                   <div className="flex items-center">
                     <span className="text-sm font-medium ml-3 duration-200">
@@ -183,10 +183,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <NavLink
                   exact
                   to="/customers"
-                  className={`block text-gray-200 hover:text-white truncate transition duration-150 ${
-                    pathname.includes("customers") &&
-                    "text-century hover:text-century"
-                  }`}
+                  className={`block hover:text-white truncate transition duration-150 ${
+                    pathname.includes("customers") ?
+                    "text-black"
+     : "text-gray-200"              }`}
                 >
                   <div className="flex items-center">
                     <span className="text-sm font-medium ml-3 duration-200">
@@ -203,10 +203,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <NavLink
                   exact
                   to="/shipping"
-                  className={`block text-gray-200 hover:text-white truncate transition duration-150 ${
-                    pathname.includes("shipping") &&
-                    "text-century hover:text-century"
-                  }`}
+                  className={`block hover:text-white truncate transition duration-150 ${
+                    pathname.includes("shipping") ?
+                    "text-black"
+    : "text-gray-200"               }`}
                 >
                   <div className="flex items-center">
                     <span className="text-sm font-medium ml-3 duration-200">
@@ -224,10 +224,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <NavLink
                   exact
                   to="/settings/account"
-                  className={`block text-gray-200 hover:text-white truncate transition duration-150 ${
-                    pathname.includes("settings") &&
-                    "text-century hover:text-century"
-                  }`}
+                  className={`block hover:text-white truncate transition duration-150 ${
+                    pathname.includes("settings") ?
+                    "text-black"
+    : "text-gray-200"               }`}
                 >
                   <div className="flex items-center">
                     <span className="text-sm font-medium ml-3 duration-200">

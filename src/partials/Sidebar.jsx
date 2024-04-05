@@ -25,10 +25,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
         !sidebarOpen ||
         sidebar.current.contains(target) ||
         trigger.current.contains(target)
-      ) return;
+      )
+        return;
       setSidebarOpen(false);
     };
-    
     document.addEventListener("click", clickHandler);
     return () => document.removeEventListener("click", clickHandler);
   });
@@ -120,9 +120,9 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <NavLink
                   exact
                   to="/dashboard"
-                  className={`block text-gray-200 hover:text-white truncate transition duration-150 ${
-                    pathname === "/dashboard" &&
-                    "text-century hover:text-century"
+                  className={`block hover:text-gray-400 truncate transition duration-150 ${
+                    pathname === "/dashboard" ?
+                    "text-black" : "text-gray-200"
                   }`}
                 >
                   <div className="flex items-center">
@@ -141,10 +141,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <NavLink
                   exact
                   to="/orders"
-                  className={`block text-gray-200 hover:text-white truncate transition duration-150 ${
-                    pathname.includes("orders") &&
-                    "text-century hover:text-century"
-                  }`}
+                  className={`block hover:text-gray-400 truncate transition duration-150 ${
+                    pathname.includes("orders") ?
+                    "text-black"
+  : "text-gray-200"                 }`}
                 >
                   <div className="flex items-center">
                     <span className="text-sm font-medium ml-3 duration-200">
@@ -162,10 +162,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <NavLink
                   exact
                   to="/products"
-                  className={`block text-gray-200 hover:text-white truncate transition duration-150 ${
-                    pathname.includes("products") &&
-                    "text-century hover:text-century"
-                  }`}
+                  className={`block hover:text-gray-400 truncate transition duration-150 ${
+                    pathname.includes("products") ?
+                    "text-black"
+    : "text-gray-200"               }`}
                 >
                   <div className="flex items-center">
                     <span className="text-sm font-medium ml-3 duration-200">
@@ -183,10 +183,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <NavLink
                   exact
                   to="/customers"
-                  className={`block text-gray-200 hover:text-white truncate transition duration-150 ${
-                    pathname.includes("customers") &&
-                    "text-century hover:text-century"
-                  }`}
+                  className={`block hover:text-gray-400 truncate transition duration-150 ${
+                    pathname.includes("customers") ?
+                    "text-black"
+     : "text-gray-200"              }`}
                 >
                   <div className="flex items-center">
                     <span className="text-sm font-medium ml-3 duration-200">
@@ -195,7 +195,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                   </div>
                 </NavLink>
               </li>
-              <li
+              {/* <li
                 className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${
                   pathname.includes("shipping") && "bg-white"
                 }`}
@@ -203,10 +203,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <NavLink
                   exact
                   to="/shipping"
-                  className={`block text-gray-200 hover:text-white truncate transition duration-150 ${
-                    pathname.includes("shipping") &&
-                    "text-century hover:text-century"
-                  }`}
+                  className={`block hover:text-gray-400 truncate transition duration-150 ${
+                    pathname.includes("shipping") ?
+                    "text-black"
+    : "text-gray-200"               }`}
                 >
                   <div className="flex items-center">
                     <span className="text-sm font-medium ml-3 duration-200">
@@ -214,7 +214,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     </span>
                   </div>
                 </NavLink>
-              </li>
+              </li> */}
               {/* Settings */}
               <li
                 className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${
@@ -224,10 +224,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <NavLink
                   exact
                   to="/settings/account"
-                  className={`block text-gray-200 hover:text-white truncate transition duration-150 ${
-                    pathname.includes("settings") &&
-                    "text-century hover:text-century"
-                  }`}
+                  className={`block hover:text-gray-400 truncate transition duration-150 ${
+                    pathname.includes("settings") ?
+                    "text-black"
+    : "text-gray-200"               }`}
                 >
                   <div className="flex items-center">
                     <span className="text-sm font-medium ml-3 duration-200">
