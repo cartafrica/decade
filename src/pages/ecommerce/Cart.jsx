@@ -4,12 +4,17 @@ import Sidebar from "../../partials/Sidebar";
 import Header from "../../partials/Header";
 import CartItems from "../../partials/ecommerce/CartItems";
 import CartItem from "../../partials/ecommerce/CartItem";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import { CheckCircleIcon } from "@heroicons/react/outline";
+import { createCart, fetchProducts } from "../../api/services/commerce";
+import { formatValue, getInitials } from "../../utils/Utils";
 
 function Cart() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+  const [products, setProducts] = useState([]);
   const [cart, addToCart] = useState([]);
+  const [shippingCost, setShippingCost] = useState(0);
   const [cartLink, setCartLink] = useState("");
   const [total, setTotal] = useState(0);
   const [productSearchInput, setProductSearchInput] = useState("");
@@ -33,55 +38,11 @@ function Cart() {
       };
     }, [ref]);
   };
-  const suggestions = [
-    {
-      id: 1223,
-      name: "The Essential Kit",
-      price: 5000,
-      photo:
-        "https://cdn.shopify.com/s/files/1/0560/7109/4469/products/essential-kit_720x.png?v=1646152940",
-    },
-    {
-      id: 1224,
-      name: "Quick Wipes",
-      price: 3000,
-      photo:
-        "https://cdn.shopify.com/s/files/1/0560/7109/4469/products/quick-wipes-box_720x.png?v=1646152929",
-    },
-    {
-      id: 1225,
-      name: "Cedar",
-      price: 4000,
-      photo:
-        "https://cdn.shopify.com/s/files/1/0560/7109/4469/products/CEDAR-2_720x.png?v=1653145870",
-    },
-    {
-      id: 1226,
-      name: "170ml Sneaker Cleaner",
-      price: 3500,
-      photo:
-        "https://cdn.shopify.com/s/files/1/0560/7109/4469/products/solution_720x.jpg?v=1646152925",
-    },
-    {
-      id: 1227,
-      name: "Microfiber Towel",
-      price: 800,
-      photo:
-        "https://cdn.shopify.com/s/files/1/0560/7109/4469/products/cleaning-towel_dd332184-8580-4f0b-a6aa-baa4374e5ab2_720x.jpg?v=1646152928",
-    },
-    {
-      id: 1228,
-      name: "Shoe Cleaning Brush",
-      price: 700,
-      photo:
-        "https://cdn.shopify.com/s/files/1/0560/7109/4469/products/shoe-brush_720x.jpg?v=1646152936",
-    },
-  ];
   const onChange = (e) => {
     const userInput = e.target.value;
 
     // Filter our suggestions that don't contain the user's input
-    const unLinked = suggestions.filter(
+    const unLinked = products.filter(
       (suggestion) =>
         suggestion.name.toLowerCase().indexOf(userInput.toLowerCase()) > -1
     );
@@ -97,14 +58,14 @@ function Cart() {
   };
   const handleRemove = (id) => {
     console.log("handleRemove");
-    let items = cart.filter((product) => product.id !== id);
+    let items = cart.filter((product) => product._id !== id);
     addToCart(items);
   };
   const handleAddToCart = (product) => {
     var x;
     var exist = false;
     for (x in cart) {
-      if (cart[x].id === product.id) {
+      if (cart[x]._id === product._id) {
         exist = true;
         let items = cart;
         let item = { ...items[x] };
@@ -140,9 +101,15 @@ function Cart() {
     addToCart(items);
     calcTotal();
   };
+
+  const handleChangeShippingCost = (e) => {
+    setShippingCost(Math.abs(e.target.value));
+    calcTotal();
+  };
+
   const calcTotal = () => {
     var total = cart.map((i) => i.price * i.quantity).reduce((a, b) => a + b);
-    setTotal(total);
+    setTotal(total + shippingCost);
   };
   function randomString() {
     var result = "";
@@ -153,6 +120,36 @@ function Cart() {
     setCartLink("https://cart.africa/l/" + result);
   }
   useOutsideAlerter(wrapperRef);
+
+  const handleCreateCart = async () => {
+    setLoading(true);
+    const extractedFields = cart.map(({ _id: productID, price, quantity }) => ({
+      productID,
+      price,
+      quantity,
+    }));
+    await createCart({ items: extractedFields, shippingCost })
+      .then((response) => {
+        setLoading(false);
+        console.log(response);
+        setCartLink("https://buyer.cart.africa/cart/" + response.data.slug);
+      })
+      .catch((e) => console.log(e));
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchProducts()
+        .then((response) => {
+          console.log(response.data);
+          setProducts(response.data.products);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 w-full">
@@ -210,16 +207,19 @@ function Cart() {
                           <div className="flex items-center space-x-3">
                             <img
                               className="w-12 h-12 rounded-md"
-                              src={suggestion.photo}
-                              alt="Product 01"
+                              src={
+                                suggestion.photo ||
+                                `https://placehold.co/120x120?text=${getInitials(
+                                  suggestion.name
+                                )}&font=roboto`
+                              }
+                              alt={suggestion.name}
                             />
                             <div>
                               <h3 className="text-sm font-semibold">
                                 {suggestion.name}
                               </h3>
-                              <small>
-                                ₦{suggestion.price.toLocaleString("en-US")}
-                              </small>
+                              <small>{formatValue(suggestion.price)}</small>
                             </div>
                           </div>
                         </li>
@@ -248,12 +248,38 @@ function Cart() {
               </ul>
               {cart.length > 0 && (
                 <>
+                  <div>
+                    <label
+                      className="block text-sm font-medium mb-1"
+                      htmlFor="promo"
+                    >
+                      Shipping Price
+                    </label>
+                    <div className=" relative rounded-md shadow-sm">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span className="text-gray-500 sm:text-sm"> ₦ </span>
+                      </div>
+                      <input
+                        type="number"
+                        name="shippingCost"
+                        id="shippingCost"
+                        value={shippingCost}
+                        onChange={handleChangeShippingCost}
+                        className="mb-2 focus:ring-black h-10 focus:border-black block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+                      />
+                    </div>
+                  </div>
                   <div className="mb-4">
                     <button
                       className="btn w-full bg-black hover:bg-black text-white"
-                      onClick={randomString}
+                      onClick={handleCreateCart}
+                      disabled={loading}
                     >
-                      Get Link - ₦{total}
+                      {loading ? (
+                        <LoadingSpinner />
+                      ) : (
+                        "Get Link - " + formatValue(total)
+                      )}
                     </button>
                   </div>
                   <div className="text-xs text-gray-500 italic text-center">

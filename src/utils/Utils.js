@@ -1,9 +1,9 @@
-import resolveConfig from 'tailwindcss/resolveConfig';
+import resolveConfig from "tailwindcss/resolveConfig";
 
 export const tailwindConfig = () => {
   // Tailwind config
-  return resolveConfig('./src/css/tailwind.config.js')
-}
+  return resolveConfig("./src/css/tailwind.config.js");
+};
 
 export const hexToRGB = (h) => {
   let r = 0;
@@ -21,9 +21,18 @@ export const hexToRGB = (h) => {
   return `${+r},${+g},${+b}`;
 };
 
-export const formatValue = (value) => Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  maximumSignificantDigits: 3,
-  notation: 'compact',
-}).format(value);
+export const formatValue = (value) =>
+  Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    // maximumSignificantDigits: 3,
+    notation: "standard",
+  }).format(value);
+
+export const getInitials = (name) => {
+  const initials = name
+    .split(" ")
+    .map((word) => word[0].toUpperCase())
+    .join("");
+  return initials;
+};
