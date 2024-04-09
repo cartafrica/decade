@@ -27,6 +27,6 @@ export const fetchOrders = () => {
 };
 
 // Cart
-export const cart = () => {
-  return axiosClient.get("/api/v1/seller/orders");
+export const createCart = (data) => {
+  return axiosClient.post("/api/v1/seller/orders", data);
 };
