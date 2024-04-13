@@ -13,6 +13,7 @@ import Products from "./pages/ecommerce/Products";
 import FormPage from "./pages/component/FormPage";
 import Cart from "./pages/ecommerce/Cart";
 import Customers from "./pages/ecommerce/Customers";
+import Customer from "./pages/ecommerce/Customer";
 import Shipping from "./pages/Shipping";
 import Index from "./pages/Index";
 import Settings from "./pages/SettingsIndex";
@@ -48,6 +49,7 @@ function App() {
           <Route exact path="/produc" element={<FormPage />} />
           <Route exact path="/cart" element={<Cart />} />
           <Route exact path="/customers" element={<Customers />} />
+          <Route exact path="/customers/:id" element={<Customer />} />
           <Route exact path="/shipping" element={<Shipping />} />
           <Route element={<Settings />}>
             <Route path="/settings/account" element={<AccountPanel />} />
