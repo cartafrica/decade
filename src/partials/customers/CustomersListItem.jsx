@@ -15,22 +15,20 @@ function CustomersListItem(props) {
   const navigate = useNavigate();
   const handleRowClick = (event, row) => {
     if (event.metaKey || event.ctrlKey) {
-      const win = window.open(`/dashboard/orders/${row.id}`, "_blank");
+      const win = window.open(`/dashboard/customers/${row.id}`, "_blank");
       win?.focus();
     } else {
-      navigate(`/dashboard/orders/${row.id}`);
+      navigate(`/dashboard/customers/${row.id}`);
     }
   };
 
   return (
     <li className="p-3" onClick={(event) => handleRowClick(event, props)}>
-      <small className="text-xs">
-        {props.spent}
-      </small>
+      <small className="text-xs">{props.spent}</small>
       <div className="flex justify-between">
         <h3 className="font-semibold">{props.customer}</h3>
-        
-          {props.location}
+
+        {props.location}
       </div>
       <h3>{props.total}</h3>
 
