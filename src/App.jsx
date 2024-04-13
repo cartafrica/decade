@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
-import './css/style.css';
+import "./css/style.css";
 
-import './charts/ChartjsConfig';
+import "./charts/ChartjsConfig";
 
 // Import pages
 import Dashboard from "./pages/Dashboard";
@@ -13,6 +13,7 @@ import Products from "./pages/ecommerce/Products";
 import FormPage from "./pages/component/FormPage";
 import Cart from "./pages/ecommerce/Cart";
 import Customers from "./pages/ecommerce/Customers";
+import Customer from "./pages/ecommerce/Customer";
 import Shipping from "./pages/Shipping";
 import Index from "./pages/Index";
 import Settings from "./pages/SettingsIndex";
@@ -25,13 +26,12 @@ import Signup from "./pages/Signup";
 import PageNotFound from "./pages/utility/PageNotFound";
 
 function App() {
-
   const location = useLocation();
 
   useEffect(() => {
-    document.querySelector('html').style.scrollBehavior = 'auto'
-    window.scroll({ top: 0 })
-    document.querySelector('html').style.scrollBehavior = ''
+    document.querySelector("html").style.scrollBehavior = "auto";
+    window.scroll({ top: 0 });
+    document.querySelector("html").style.scrollBehavior = "";
   }, [location.pathname]); // triggered on route change
 
   return (
@@ -49,6 +49,7 @@ function App() {
           <Route exact path="/produc" element={<FormPage />} />
           <Route exact path="/cart" element={<Cart />} />
           <Route exact path="/customers" element={<Customers />} />
+          <Route exact path="/customers/:id" element={<Customer />} />
           <Route exact path="/shipping" element={<Shipping />} />
           <Route element={<Settings />}>
             <Route path="/settings/account" element={<AccountPanel />} />
